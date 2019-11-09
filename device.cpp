@@ -30,18 +30,19 @@ int Morozov::Device::addNewRequest(float currentTime, Morozov::Request request)
 std::list<std::pair<float, int> > Morozov::Device::freeDoneDevices(float currentTime)
 {
     std::list<std::pair<float, int>> tmpList;
+    std::list<std::pair<float, Request>> tmpList2;
 
     int i = 1;
     for (auto it = devices.begin(); it != devices.end(); ++it) {
         if ((*it).first < currentTime) {
             tmpList.push_back(std::make_pair((*it).first, i));
+        } else {
+            tmpList2.push_back(*it);
         }
         i++;
     }
-
-    devices.remove_if([tmpList] (std::pair<float, Request> pair) {
-        return std::find(tmpList.begin(), tmpList.end(), pair);
-    });
+    devices.clear();
+    devices.insert(devices.end(), tmpList2.begin(), tmpList2.end());
 
     return tmpList;
 }

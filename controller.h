@@ -1,13 +1,16 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
+#include <list>
+#include <string>
+
 namespace Morozov {
 class Controller
 {
 public:
     Controller();
 
-    void modulateWork();
+    std::list<std::string> modulateWork();
 
     void setAlpha(int value);
     void setBeta(int value);

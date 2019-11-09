@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "source.h"
+#include "controller.h"
 
 namespace Ui {
 class MainWindow;
@@ -16,15 +16,18 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void setSource(Morozov::Source value);
+    void setController(const Morozov::Controller &value);
 
 private slots:
+    void on_buttonModulate_clicked();
+
     void on_buttonNext_clicked();
 
 private:
     Ui::MainWindow *ui;
-
-    Morozov::Source *source;
+    Morozov::Controller controller;
+    std::list<std::string> resultsList;
+    int currentRes;
 };
 
 #endif // MAINWINDOW_H

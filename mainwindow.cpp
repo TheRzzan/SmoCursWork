@@ -14,18 +14,25 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::setSource(Morozov::Source value)
+void MainWindow::setController(const Morozov::Controller &value)
 {
-    this->source = &value;
+    controller = value;
+}
+
+void MainWindow::on_buttonModulate_clicked()
+{
+    resultsList.clear();
+    std::list<std::string> resLst = controller.modulateWork();
+    resultsList.insert(resultsList.end(), resLst.begin(), resLst.end());
+    currentRes = 0;
 }
 
 void MainWindow::on_buttonNext_clicked()
 {
-    Morozov::Request request = this->source->getNextRequest();
-
-    std::string str1 = std::to_string(request.getSourceId()) + "." + std::to_string(request.getRequestNumber());
-    ui->textRequestName->setText(QString::fromUtf8(str1.c_str()));
-
-    std::string str2 = std::to_string(request.getTimeOfWait());
-    ui->texrTimeOfWait->setText(QString::fromUtf8(str2.c_str()));
+    if (resultsList.size() > 0) {
+        ui->textBrowser->setText(QString::fromUtf8(resultsList.front().c_str()));
+        resultsList.pop_front();
+    } else {
+        ui->textBrowser->setText(QString::fromUtf8("Конец"));
+    }
 }

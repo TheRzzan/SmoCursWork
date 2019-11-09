@@ -14,34 +14,44 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="verticalLayoutWidget">
+   <widget class="QTextBrowser" name="textBrowser">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>100</y>
-      <width>451</width>
-      <height>101</height>
+      <x>30</x>
+      <y>10</y>
+      <width>541</width>
+      <height>201</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>220</y>
+      <width>541</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QLabel" name="textRequestName">
+      <widget class="QPushButton" name="buttonModulate">
        <property name="text">
-        <string>Request name</string>
+        <string>modulate</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="texrTimeOfWait">
+      <widget class="QPushButton" name="buttonBack">
        <property name="text">
-        <string>Time of wait</string>
+        <string>Back step</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="buttonNext">
        <property name="text">
-        <string>Next</string>
+        <string>Next step</string>
        </property>
       </widget>
      </item>

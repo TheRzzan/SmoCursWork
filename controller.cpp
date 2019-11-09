@@ -27,9 +27,12 @@ std::list<std::string> Morozov::Controller::modulateWork()
     float currentTime = 0;
 
     for (int i = 0; i < requestsNumber; i++) {
+        Request nextRequest = sources->getNextRequest();
+        currentTime += nextRequest.getTimeOfWait();
+
         std::list<std::pair<float, int> > doneRequests = devices->freeDoneDevices(currentTime);
         if (doneRequests.size() > 0) {
-            for (auto it = doneRequests.begin(); it != doneRequests.end(); ++i) {
+            for (auto it = doneRequests.begin(); it != doneRequests.end(); ++it) {
                 resultList.push_back("Девайс №" + std::to_string((*it).second) + " освободился в " + std::to_string((*it).first));
 
                 if (!buffers->isEmptyBuff()) {
@@ -41,7 +44,6 @@ std::list<std::string> Morozov::Controller::modulateWork()
             }
         }
 
-        Request nextRequest = sources->getNextRequest();
         std::string tmpResStr = "Создана заявка " + std::to_string(nextRequest.getSourceId()) + "." + std::to_string(nextRequest.getRequestNumber());
         if (!devices->isFreeDevice()) {
             if (buffers->isFreeBuff()) {
