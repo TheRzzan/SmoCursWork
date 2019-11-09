@@ -28,12 +28,14 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     request.cpp \
-    source.cpp
+    source.cpp \
+    buffer.cpp
 
 HEADERS += \
         mainwindow.h \
     request.h \
-    source.h
+    source.h \
+    buffer.h
 
 FORMS += \
         mainwindow.ui
