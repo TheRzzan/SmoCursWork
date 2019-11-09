@@ -11,12 +11,15 @@ public:
     Buffer();
     Buffer(int size);
 
+    bool isFreeBuff();
+
     void addNewRequest(Request request);
+    Request deleteOldRequest();
     Request getRequest();
 private:
     int size;
 
-    std::list<int> buffers;
+    std::list<Request> buffers;
 };
 }
 
