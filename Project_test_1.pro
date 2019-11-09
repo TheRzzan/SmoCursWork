@@ -30,14 +30,16 @@ SOURCES += \
     request.cpp \
     source.cpp \
     buffer.cpp \
-    device.cpp
+    device.cpp \
+    controller.cpp
 
 HEADERS += \
         mainwindow.h \
     request.h \
     source.h \
     buffer.h \
-    device.h
+    device.h \
+    controller.h
 
 FORMS += \
         mainwindow.ui

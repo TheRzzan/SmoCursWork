@@ -11,7 +11,11 @@ public:
     Buffer();
     Buffer(int size);
 
-    void addNewRequest(Request request);
+    bool isFreeBuff();
+    bool isEmptyBuff();
+
+    int addNewRequest(Request request);
+    Request deleteOldRequest();
     Request getRequest();
 private:
     int size;

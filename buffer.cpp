@@ -15,9 +15,15 @@ bool Morozov::Buffer::isFreeBuff()
     return buffers.size() != size;
 }
 
-void Morozov::Buffer::addNewRequest(Morozov::Request request)
+bool Morozov::Buffer::isEmptyBuff()
+{
+    return buffers.size() <= 0;
+}
+
+int Morozov::Buffer::addNewRequest(Morozov::Request request)
 {
     buffers.push_front(request);
+    return buffers.size();
 }
 
 Morozov::Request Morozov::Buffer::deleteOldRequest()
