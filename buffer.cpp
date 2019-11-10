@@ -8,52 +8,65 @@ Morozov::Buffer::Buffer()
 Morozov::Buffer::Buffer(int size)
 {
     this->size = size;
-    buffers.reserve(size);
+    for (int i = 0; i < size; i++) {
+        buffers.push_back(nullptr);
+    }
 }
 
 bool Morozov::Buffer::isFreeBuff()
 {
-    return buffers.size() != size;
+    bool res = false;
+    for (int i = 0; i < size; i++) {
+        if (buffers.at(i) == nullptr)
+            res = true;
+    }
+    return res;
 }
 
 bool Morozov::Buffer::isEmptyBuff()
 {
-    return buffers.size() == 0;
+    bool res = true;
+    for (int i = 0; i < size; i++) {
+        if (buffers.at(i) != nullptr)
+            res = false;
+    }
+    return res;
 }
 
 int Morozov::Buffer::addNewRequest(Morozov::Request request)
 {
-    int i = 0;
-    auto it = buffers.begin();
-    for (; it != buffers.end(); ++it, i++) {
-        if (*it == nullptr) {
-            buffers.insert(it, &request);
-            return i;
+    for (int i = 0; i < size; i++) {
+        if (buffers.at(i) == nullptr) {
+            buffers.at(i) = new Request(request.getTimeOfWait(), request.getSourceId(), request.getRequestNumber());
+            return i + 1;
         }
     }
+
     return -1;
 }
 
 Morozov::Request Morozov::Buffer::deleteOldRequest()
 {
-    for (auto it = buffers.end(); it != buffers.begin() ; --it) {
-        if (*it != nullptr) {
-            Request req = **it;
-            buffers.insert(it, nullptr);
+    for (int i = size - 1; i >= 0; i--) {
+        if (buffers.at(i) != nullptr) {
+            Request req = *buffers.at(i);
+            buffers.at(i) = nullptr;
             return req;
         }
     }
+
     return Request();
 }
 
 Morozov::Request Morozov::Buffer::getRequest()
 {
-    for (auto it = buffers.begin(); it != buffers.end() ; ++it) {
-        if (*it != nullptr) {
-            Request req = **it;
-            buffers.insert(it, nullptr);
+    for (int i = 0; i < size; i++) {
+        if (buffers.at(i) != nullptr) {
+            Request req = *buffers.at(i);
+            buffers.at(i) = nullptr;
             return req;
         }
     }
+
     return Request();
 }

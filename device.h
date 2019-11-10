@@ -2,6 +2,7 @@
 #define DEVICE_H
 
 #include <list>
+#include <vector>
 #include <utility>
 #include "request.h"
 
@@ -20,7 +21,7 @@ private:
     int size;
     float lambda;
 
-    std::list<std::pair<float, Request>> devices;
+    std::vector<std::pair<float, Request> *> devices;
 };
 }
 
