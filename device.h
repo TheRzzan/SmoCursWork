@@ -22,6 +22,8 @@ private:
     float lambda;
 
     std::vector<std::pair<float, Request> *> devices;
+
+    int cursor = 0;
 };
 }
 

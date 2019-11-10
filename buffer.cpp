@@ -47,7 +47,7 @@ int Morozov::Buffer::addNewRequest(Morozov::Request request)
 
 Morozov::Request Morozov::Buffer::deleteOldRequest()
 {
-    for (int i = size - 1; i >= 0; i--) {
+    for (int i = 0; i < size; i++) {
         if (buffers.at(i) != nullptr) {
             Request req = *buffers.at(i);
             buffers.at(i) = nullptr;
@@ -61,11 +61,16 @@ Morozov::Request Morozov::Buffer::deleteOldRequest()
 Morozov::Request Morozov::Buffer::getRequest()
 {
     for (int i = 0; i < size; i++) {
-        if (buffers.at(i) != nullptr) {
-            Request req = *buffers.at(i);
-            buffers.at(i) = nullptr;
+        if (cursor >= size || cursor < 0) {
+            cursor = 0;
+        }
+        if (buffers.at(cursor) != nullptr) {
+            Request req = *buffers.at(cursor);
+            buffers.at(cursor) = nullptr;
+            cursor++;
             return req;
         }
+        cursor++;
     }
 
     return Request();

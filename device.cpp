@@ -33,10 +33,15 @@ int Morozov::Device::addNewRequest(float currentTime, Morozov::Request request)
     float timeToDo = currentTime + (std::log(qrand() + 1) - std::log(RAND_MAX)/(-this->lambda));
 
     for (int i = 0; i < size; i++) {
-        if (devices.at(i) == nullptr) {
-            devices.at(i) = new std::pair<float, Request>(timeToDo, Request(request.getTimeOfWait(), request.getSourceId(), request.getRequestNumber()));
-            return i + 1;
+        if (cursor >= size || cursor < 0) {
+            cursor = 0;
         }
+        if (devices.at(cursor) == nullptr) {
+            devices.at(cursor) = new std::pair<float, Request>(timeToDo, Request(request.getTimeOfWait(), request.getSourceId(), request.getRequestNumber()));
+            cursor++;
+            return cursor;
+        }
+        cursor++;
     }
 
     return -1;

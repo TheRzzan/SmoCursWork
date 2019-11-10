@@ -21,6 +21,8 @@ private:
     int size;
 
     std::vector<Request *> buffers;
+
+    int cursor = 0;
 };
 }
 
