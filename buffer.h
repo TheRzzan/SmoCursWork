@@ -2,7 +2,7 @@
 #define BUFFER_H
 
 #include "request.h"
-#include <list>
+#include <vector>
 
 namespace Morozov {
 class Buffer
@@ -20,7 +20,7 @@ public:
 private:
     int size;
 
-    std::list<Request> buffers;
+    std::vector<Request *> buffers;
 };
 }
 
