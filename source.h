@@ -17,10 +17,12 @@ private:
     int beta;
     int sourcesAmount;
 
-    int currentSource;
+    float *timesToWait;
     int *requestNumbers;
 
-    int incrementCurrentSource();
+    void fillTimesToWait();
+    std::pair<int, float> getMinTimeAndIndex();
+    void removeMinTimeToWait();
 };
 }
 

@@ -37,7 +37,7 @@ std::list<std::string> Morozov::Controller::modulateWork()
 
                 if (!buffers->isEmptyBuff()) {
                     Request request2 = buffers->getRequest();
-                    int deviceNum2 = devices->addNewRequest(currentTime, request2);
+                    int deviceNum2 = devices->addNewRequest((*it).first, request2);
                     resultList.push_back("Заявка " + std::to_string(request2.getSourceId()) + "." + std::to_string(request2.getRequestNumber())
                                          + " загружена в девайс №" + std::to_string(deviceNum2));
                 }

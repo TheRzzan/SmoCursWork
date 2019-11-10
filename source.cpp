@@ -7,8 +7,8 @@ Morozov::Source::Source()
     this->beta = 0;
     this->sourcesAmount = 0;
 
-    this->currentSource = 0;
-    this->requestNumbers = new int[0];
+    this->timesToWait = new float[this->sourcesAmount];
+    this->requestNumbers = new int[this->sourcesAmount];
 }
 
 Morozov::Source::Source(int alpha, int beta, int sourcesAmount)
@@ -17,29 +17,49 @@ Morozov::Source::Source(int alpha, int beta, int sourcesAmount)
     this->beta = beta;
     this->sourcesAmount = sourcesAmount;
 
-    this->currentSource = 0;
+    this->timesToWait = new float[sourcesAmount];
     this->requestNumbers = new int[sourcesAmount];
+
     for (int i = 0; i < sourcesAmount; i++) {
         this->requestNumbers[i] = 0;
+        this->timesToWait[i] = -1;
     }
 }
 
 Morozov::Request Morozov::Source::getNextRequest()
 {
-    float tmpTimeOfWait = ((float)qrand()/(float)RAND_MAX)*(beta - alpha) + alpha;
-    int tmpCS = incrementCurrentSource();
-    if (sourcesAmount == 0)
-        return Request();
-    return Request(tmpTimeOfWait, tmpCS + 1, requestNumbers[tmpCS]++);
+    fillTimesToWait();
+    std::pair<int, float> min = getMinTimeAndIndex();
+    removeMinTimeToWait();
+    return Request(min.second, min.first + 1, requestNumbers[min.first]);
 }
 
-int Morozov::Source::incrementCurrentSource()
+void Morozov::Source::fillTimesToWait()
 {
-    int tmpCS = currentSource;
-    if (currentSource + 1 >= sourcesAmount) {
-        currentSource = 0;
-    } else {
-        currentSource++;
+    for (int i = 0; i < sourcesAmount; i++) {
+        if (timesToWait[i] <= 0) {
+            requestNumbers[i]++;
+            timesToWait[i] = ((float)qrand()/(float)RAND_MAX)*(beta - alpha) + alpha;
+        }
     }
-    return tmpCS;
+}
+
+std::pair<int, float> Morozov::Source::getMinTimeAndIndex()
+{
+    std::pair<int, float> min = std::make_pair(0, timesToWait[0]);
+    for (int i = 0; i < sourcesAmount; i++) {
+        if (timesToWait[i] < min.second) {
+            min = std::make_pair(i, timesToWait[i]);
+        }
+    }
+
+    return min;
+}
+
+void Morozov::Source::removeMinTimeToWait()
+{
+    std::pair<int, float> min = getMinTimeAndIndex();
+    for (int i = 0; i < sourcesAmount; i++) {
+        timesToWait[i] -= min.second;
+    }
 }
