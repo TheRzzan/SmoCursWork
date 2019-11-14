@@ -8,7 +8,7 @@ Morozov::Buffer::Buffer()
 Morozov::Buffer::Buffer(int size)
 {
     this->size = size;
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < buffers.size(); i++) {
         buffers.push_back(nullptr);
     }
 }
@@ -16,7 +16,7 @@ Morozov::Buffer::Buffer(int size)
 bool Morozov::Buffer::isFreeBuff()
 {
     bool res = false;
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < buffers.size(); i++) {
         if (buffers.at(i) == nullptr)
             res = true;
     }
@@ -26,7 +26,7 @@ bool Morozov::Buffer::isFreeBuff()
 bool Morozov::Buffer::isEmptyBuff()
 {
     bool res = true;
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < buffers.size(); i++) {
         if (buffers.at(i) != nullptr)
             res = false;
     }
@@ -35,7 +35,7 @@ bool Morozov::Buffer::isEmptyBuff()
 
 int Morozov::Buffer::addNewRequest(Morozov::Request request)
 {
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < buffers.size(); i++) {
         if (buffers.at(i) == nullptr) {
             buffers.at(i) = new Request(request.getTimeOfWait(), request.getSourceId(), request.getRequestNumber());
             return i + 1;
@@ -45,22 +45,22 @@ int Morozov::Buffer::addNewRequest(Morozov::Request request)
     return -1;
 }
 
-Morozov::Request Morozov::Buffer::deleteOldRequest()
+std::pair<Morozov::Request, int> Morozov::Buffer::deleteOldRequest()
 {
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < buffers.size(); i++) {
         if (buffers.at(i) != nullptr) {
             Request req = *buffers.at(i);
             buffers.at(i) = nullptr;
-            return req;
+            return std::make_pair(req, i);
         }
     }
 
-    return Request();
+    return std::make_pair(Request(), -1);
 }
 
-Morozov::Request Morozov::Buffer::getRequest()
+std::pair<Morozov::Request, int> Morozov::Buffer::getRequest()
 {
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < buffers.size(); i++) {
         if (cursor >= size || cursor < 0) {
             cursor = 0;
         }
@@ -68,10 +68,10 @@ Morozov::Request Morozov::Buffer::getRequest()
             Request req = *buffers.at(cursor);
             buffers.at(cursor) = nullptr;
             cursor++;
-            return req;
+            return std::make_pair(req, i);
         }
         cursor++;
     }
 
-    return Request();
+    return std::make_pair(Request(), -1);
 }

@@ -73,23 +73,21 @@ void Morozov::Analytics::commit()
     std::vector<std::string> canceledVec;
 
     for (int i = 0; i < sourcesAmount; i++) {
-        sourcesVec.push_back("");
+        sourcesVec.push_back("null");
     }
 
     for (int i = 0; i < buffersAmount; i++) {
-        buffersVec.push_back("");
+        buffersVec.push_back("null");
     }
 
     for (int i = 0; i < devicesAmount; i++) {
-        devicesVec.push_back("");
+        devicesVec.push_back("null");
     }
 
-    std::vector<std::string> *currentSituation = new std::vector<std::string>[NUM_OF_DISPLAY_AREAS];
-    currentSituation[0] = sourcesVec;
-    currentSituation[1] = buffersVec;
-    currentSituation[2] = devicesVec;
-    currentSituation[3] = canceledVec;
-    steps.push_back(currentSituation);
+    steps.push_back(StepModel(sourcesVec,
+                    buffersVec,
+                    devicesVec,
+                    canceledVec));
 
     for (auto it = analytics.begin(); it!= analytics.end(); ++it) {
         std::pair<Request, int> reqPair = (*it).first;
@@ -104,15 +102,13 @@ void Morozov::Analytics::commit()
                             "." +
                             std::to_string(reqPair.first.getRequestNumber());
                 } else {
-                    sourcesVec.at(i) = "";
+                    sourcesVec.at(i) = "null";
                 }
             }
-            currentSituation = new std::vector<std::string>[NUM_OF_DISPLAY_AREAS];
-            currentSituation[0] = sourcesVec;
-            currentSituation[1] = buffersVec;
-            currentSituation[2] = devicesVec;
-            currentSituation[3] = canceledVec;
-            steps.push_back(currentSituation);
+            steps.push_back(StepModel(sourcesVec,
+                            buffersVec,
+                            devicesVec,
+                            canceledVec));
         }break;
         case ADD_TO_BUFF:
         {
@@ -124,12 +120,17 @@ void Morozov::Analytics::commit()
                             std::to_string(reqPair.first.getRequestNumber());
                 }
             }
+            for (size_t i = 0; i < sourcesVec.size(); i ++) {
+                if (i == (reqPair.first.getSourceId() - 1)) {
+                    sourcesVec.at(i) = "null";
+                }
+            }
         }break;
         case REMOVE_FROM_BUFF:
         {
             for (size_t i = 0; i < buffersVec.size(); i ++) {
                 if (i == (reqPair.second - 1)) {
-                    buffersVec.at(i) = "";
+                    buffersVec.at(i) = "null";
                 }
             }
         }break;
@@ -137,7 +138,7 @@ void Morozov::Analytics::commit()
         {
             for (size_t i = 0; i < buffersVec.size(); i ++) {
                 if (i == (reqPair.second - 1)) {
-                    buffersVec.at(i) = "";
+                    buffersVec.at(i) = "null";
                 }
             }
         }break;
@@ -151,26 +152,33 @@ void Morozov::Analytics::commit()
                             std::to_string(reqPair.first.getRequestNumber());
                 }
             }
+            for (size_t i = 0; i < sourcesVec.size(); i ++) {
+                if (i == (reqPair.first.getSourceId() - 1)) {
+                    sourcesVec.at(i) = "null";
+                }
+            }
+            steps.push_back(StepModel(sourcesVec,
+                            buffersVec,
+                            devicesVec,
+                            canceledVec));
         }break;
         case REMOVE_FROM_DEVICE:
         {
             for (size_t i = 0; i < devicesVec.size(); i ++) {
                 if (i == (reqPair.second - 1)) {
-                    devicesVec.at(i) = "";
+                    devicesVec.at(i) = "null";
                 }
             }
-            currentSituation = new std::vector<std::string>[NUM_OF_DISPLAY_AREAS];
-            currentSituation[0] = sourcesVec;
-            currentSituation[1] = buffersVec;
-            currentSituation[2] = devicesVec;
-            currentSituation[3] = canceledVec;
-            steps.push_back(currentSituation);
+            steps.push_back(StepModel(sourcesVec,
+                            buffersVec,
+                            devicesVec,
+                            canceledVec));
         }break;
         }
     }
 }
 
-std::vector<std::vector<std::string>*> Morozov::Analytics::getSteps() const
+std::vector<Morozov::Analytics::StepModel> Morozov::Analytics::getSteps() const
 {
     return steps;
 }

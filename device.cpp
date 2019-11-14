@@ -21,7 +21,7 @@ Morozov::Device::Device(int size, float lambda)
 bool Morozov::Device::isFreeDevice()
 {
     bool res = false;
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < devices.size(); i++) {
         if (devices.at(i) == nullptr)
             res = true;
     }
@@ -32,8 +32,8 @@ int Morozov::Device::addNewRequest(float currentTime, Morozov::Request request)
 {
     float timeToDo = currentTime + (std::log(qrand() + 1) - std::log(RAND_MAX)/(-this->lambda));
 
-    for (int i = 0; i < size; i++) {
-        if (cursor >= size || cursor < 0) {
+    for (int i = 0; i < devices.size(); i++) {
+        if (cursor >= devices.size() || cursor < 0) {
             cursor = 0;
         }
         if (devices.at(cursor) == nullptr) {
@@ -47,15 +47,21 @@ int Morozov::Device::addNewRequest(float currentTime, Morozov::Request request)
     return -1;
 }
 
-std::list<std::pair<float, int> > Morozov::Device::freeDoneDevices(float currentTime)
+std::list<std::pair<Morozov::Request, int> > Morozov::Device::freeDoneDevices(float currentTime)
 {
-    std::list<std::pair<float, int>> tmpList;
+    std::list<std::pair<Request, int>> tmpList;
     std::vector<std::pair<float, Request> *> devicesTmp;
 
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < devices.size(); i++) {
         if (devices.at(i) != nullptr) {
             if ((*devices.at(i)).first < currentTime) {
-                tmpList.push_back(std::make_pair((*devices.at(i)).first, i + 1));
+                tmpList.push_back(std::make_pair(
+                                      Request(
+                                          (*devices.at(i)).first,
+                                          (*devices.at(i)).second.getSourceId(),
+                                          (*devices.at(i)).second.getRequestNumber()
+                                          ),
+                                      i + 1));
                 devicesTmp.push_back(nullptr);
             } else {
                 devicesTmp.push_back(devices.at(i));

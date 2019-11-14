@@ -3,6 +3,7 @@
 
 #include <list>
 #include <string>
+#include "analytics.h"
 
 namespace Morozov {
 class Controller
@@ -10,7 +11,7 @@ class Controller
 public:
     Controller();
 
-    std::list<std::string> modulateWork();
+    std::list<std::string> modulateWork(Analytics &analytics);
 
     void setAlpha(int value);
     void setBeta(int value);

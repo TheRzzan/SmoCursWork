@@ -26,6 +26,8 @@ private slots:
 private:
     Ui::MainWindow *ui;
     Morozov::Controller controller;
+    Morozov::Analytics analytics;
+    int step = 0;
     std::list<std::string> resultsList;
     int currentRes;
 };

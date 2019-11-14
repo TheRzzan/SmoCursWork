@@ -15,8 +15,8 @@ public:
     bool isEmptyBuff();
 
     int addNewRequest(Request request);
-    Request deleteOldRequest();
-    Request getRequest();
+    std::pair<Request, int> deleteOldRequest();
+    std::pair<Request, int> getRequest();
 private:
     int size;
 

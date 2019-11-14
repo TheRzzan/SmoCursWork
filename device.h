@@ -16,7 +16,7 @@ public:
     bool isFreeDevice();
 
     int addNewRequest(float currentTime, Request request);
-    std::list<std::pair<float, int>> freeDoneDevices(float currentTime);
+    std::list<std::pair<Request, int>> freeDoneDevices(float currentTime);
 private:
     int size;
     float lambda;

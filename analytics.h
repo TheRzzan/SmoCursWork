@@ -10,6 +10,24 @@ namespace Morozov{
 class Analytics
 {
 public:
+    class StepModel{
+    public:
+        StepModel(std::vector<std::string> sources,
+        std::vector<std::string> buffers,
+        std::vector<std::string> devices,
+        std::vector<std::string> canceled) {
+            this->sources = sources;
+            this->buffers = buffers;
+            this->devices = devices;
+            this->canceled = canceled;
+        }
+
+        std::vector<std::string> sources;
+        std::vector<std::string> buffers;
+        std::vector<std::string> devices;
+        std::vector<std::string> canceled;
+    };
+
     Analytics();
 
     // Make analytics
@@ -38,8 +56,9 @@ public:
     std::vector<float>  getDeviceLoad() const;
 
     // Step mode
-    std::vector<std::vector<std::string>*> getSteps() const;
+    std::vector<StepModel> getSteps() const;
     static const int NUM_OF_DISPLAY_AREAS = 4;
+
 private:
     enum Act
     {
@@ -64,7 +83,7 @@ private:
     std::vector<float>  deviceLoad;
 
     // Step mode
-    std::vector<std::vector<std::string>*> steps;
+    std::vector<StepModel> steps;
 
     // Configurations
     int sourcesAmount;
