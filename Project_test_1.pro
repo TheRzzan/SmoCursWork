@@ -31,7 +31,8 @@ SOURCES += \
     source.cpp \
     buffer.cpp \
     device.cpp \
-    controller.cpp
+    controller.cpp \
+    analytics.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -39,7 +40,8 @@ HEADERS += \
     source.h \
     buffer.h \
     device.h \
-    controller.h
+    controller.h \
+    analytics.h
 
 FORMS += \
         mainwindow.ui
