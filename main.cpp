@@ -7,13 +7,13 @@ int main(int argc, char *argv[])
     MainWindow w;
 
     Morozov::Controller controller = Morozov::Controller();
-    controller.setAlpha(500);
+    controller.setAlpha(60);
     controller.setBeta(2);
     controller.setLambda(2);
-    controller.setSourcesAmount(144);
+    controller.setSourcesAmount(3);
     controller.setBuffersAmount(1);
-    controller.setDevicesAmount(3);
-    controller.setRequestsNumber(30);
+    controller.setDevicesAmount(1);
+    controller.setRequestsNumber(3000);
 
     w.setController(controller);
     w.show();

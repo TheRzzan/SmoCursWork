@@ -59,6 +59,22 @@ bool Morozov::Analytics::config(int sourcesAmount, int buffersAmount, int device
         this->sourcesAmount = sourcesAmount;
         this->buffersAmount = buffersAmount;
         this->devicesAmount = devicesAmount;
+
+        for (int i = 0; i < sourcesAmount; i++) {
+            req_proc.push_back(0);
+            req_fail.push_back(0);
+            time_in_system.push_back(0);
+            time_of_wait.push_back(0);
+            time_of_process.push_back(0);
+            disp_tow.push_back(0);
+            disp_top.push_back(0);
+            prob_of_fail.push_back(0);
+        }
+
+        for (int i = 0; i < devicesAmount; i++) {
+            deviceLoad.push_back(0);
+        }
+
         return true;
     } else {
         return false;
@@ -128,6 +144,8 @@ void Morozov::Analytics::commit()
         }break;
         case REMOVE_FROM_BUFF:
         {
+            *(req_fail.begin() + reqPair.first.getSourceId() - 1) = (*(req_fail.begin() + reqPair.first.getSourceId() - 1)) + 1;
+
             for (size_t i = 0; i < buffersVec.size(); i ++) {
                 if (i == (reqPair.second)) {
                     buffersVec.at(i) = "null";
@@ -148,6 +166,8 @@ void Morozov::Analytics::commit()
         }break;
         case ADD_TO_DEVICE:
         {
+            *(req_proc.begin() + reqPair.first.getSourceId() - 1) = (*(req_proc.begin() + reqPair.first.getSourceId() - 1)) + 1;
+
             for (size_t i = 0; i < devicesVec.size(); i ++) {
                 if (i == (reqPair.second - 1)) {
                     devicesVec.at(i) =
