@@ -113,7 +113,7 @@ void Morozov::Analytics::commit()
         case ADD_TO_BUFF:
         {
             for (size_t i = 0; i < buffersVec.size(); i ++) {
-                if (i == (reqPair.second - 1)) {
+                if (i == (reqPair.second)) {
                     buffersVec.at(i) =
                             std::to_string(reqPair.first.getSourceId()) +
                             "." +
@@ -129,15 +129,19 @@ void Morozov::Analytics::commit()
         case REMOVE_FROM_BUFF:
         {
             for (size_t i = 0; i < buffersVec.size(); i ++) {
-                if (i == (reqPair.second - 1)) {
+                if (i == (reqPair.second)) {
                     buffersVec.at(i) = "null";
+                    canceledVec.push_back(
+                            std::to_string(reqPair.first.getSourceId()) +
+                            "." +
+                            std::to_string(reqPair.first.getRequestNumber()));
                 }
             }
         }break;
         case GET_FROM_BUFF:
         {
             for (size_t i = 0; i < buffersVec.size(); i ++) {
-                if (i == (reqPair.second - 1)) {
+                if (i == (reqPair.second)) {
                     buffersVec.at(i) = "null";
                 }
             }

@@ -69,7 +69,6 @@ std::list<std::pair<Morozov::Request, int> > Morozov::Device::freeDoneDevices(fl
         } else {
             devicesTmp.push_back(nullptr);
         }
-        i++;
     }
 
     devices = devicesTmp;

@@ -68,7 +68,7 @@ void MainWindow::on_buttonNext_clicked()
             i++;
         } while(i < max);
 
-        resultStr += "\n\n";
+        resultStr += "\n\nCanceled: ";
         for (int j = 0; j < stepTmp.canceled.size(); j++) {
             resultStr += stepTmp.canceled.at(j) + " ";
         }

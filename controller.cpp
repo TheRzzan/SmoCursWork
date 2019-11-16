@@ -68,7 +68,7 @@ std::list<std::string> Morozov::Controller::modulateWork(Analytics &analytics)
         if (!devices->isFreeDevice()) {
             if (buffers->isFreeBuff()) {
                 int bufferNum = buffers->addNewRequest(nextRequest);
-                tmpResStr += " и загружена в буффер №" + std::to_string(bufferNum);
+                tmpResStr += " и загружена в буффер №" + std::to_string(bufferNum + 1);
                 analytics.addRequestToBuff(Request(
                                                  currentTime,
                                                  nextRequest.getSourceId(),
@@ -81,8 +81,8 @@ std::list<std::string> Morozov::Controller::modulateWork(Analytics &analytics)
                                      + " удалена из буффера.");
                 analytics.removeRequestFromBuff(Request(
                                                  currentTime,
-                                                 nextRequest.getSourceId(),
-                                                 nextRequest.getRequestNumber()),
+                                                 deletedRequest.getSourceId(),
+                                                 deletedRequest.getRequestNumber()),
                                              pair3.second);
                 int bufferNum = buffers->addNewRequest(nextRequest);
                 tmpResStr += " и загружена в буффер №" + std::to_string(bufferNum);

@@ -10,8 +10,8 @@ int main(int argc, char *argv[])
     controller.setAlpha(500);
     controller.setBeta(2);
     controller.setLambda(2);
-    controller.setSourcesAmount(10);
-    controller.setBuffersAmount(2);
+    controller.setSourcesAmount(144);
+    controller.setBuffersAmount(1);
     controller.setDevicesAmount(3);
     controller.setRequestsNumber(30);
 
