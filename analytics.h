@@ -40,7 +40,7 @@ public:
 
     void beginTransaction();
     bool config(int sourcesAmount, int buffersAmount, int devicesAmount);
-    void commit();
+    void commit(float allWorkTime);
 
     // Get analytics
 

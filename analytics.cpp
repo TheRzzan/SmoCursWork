@@ -82,10 +82,12 @@ bool Morozov::Analytics::config(int sourcesAmount, int buffersAmount, int device
     }
 }
 
-void Morozov::Analytics::commit()
+void Morozov::Analytics::commit(float allWorkTime)
 {
     std::map<std::string, std::pair<float, float>> tmpTimeOfWait;
     std::map<std::string, std::pair<float, float>> tmpTimeOfProcess;
+
+    std::map<std::string, std::pair<float, float>> tmpTimeOfDeviceWork;
 
     std::vector<std::string> sourcesVec;
     std::vector<std::string> buffersVec;
@@ -191,6 +193,11 @@ void Morozov::Analytics::commit()
         }break;
         case ADD_TO_DEVICE:
         {
+            tmpTimeOfDeviceWork.insert(std::make_pair(
+                                           std::to_string(reqPair.second),
+                                           std::make_pair(reqPair.first.getTimeOfWait(), 0)
+                                           ));
+
             std::string tmpKey = std::to_string(reqPair.first.getSourceId()) +
                                  "." +
                                  std::to_string(reqPair.first.getRequestNumber());
@@ -218,12 +225,17 @@ void Morozov::Analytics::commit()
         }break;
         case REMOVE_FROM_DEVICE:
         {
+            auto tmpIt = tmpTimeOfDeviceWork.find(std::to_string(reqPair.second));
+            if (tmpIt != tmpTimeOfDeviceWork.end()) {
+                tmpIt->second.second = reqPair.first.getTimeOfWait();
+            }
+
             std::string tmpKey = std::to_string(reqPair.first.getSourceId()) +
                                  "." +
                                  std::to_string(reqPair.first.getRequestNumber());
-            auto tmpIt = tmpTimeOfProcess.find(tmpKey);
-            if (tmpIt != tmpTimeOfProcess.end()) {
-                tmpIt->second.second = reqPair.first.getTimeOfWait();
+            auto tmpIt2 = tmpTimeOfProcess.find(tmpKey);
+            if (tmpIt2 != tmpTimeOfProcess.end()) {
+                tmpIt2->second.second = reqPair.first.getTimeOfWait();
             }
 
             for (size_t i = 0; i < devicesVec.size(); i ++) {
@@ -242,10 +254,26 @@ void Morozov::Analytics::commit()
     // count times
     std::vector<float> totalTOW;
     std::vector<float> totalTOP;
+    std::vector<float> totalDevWork;
 
     for (int i = 0; i < sourcesAmount; i++) {
         totalTOW.push_back(0);
         totalTOP.push_back(0);
+    }
+
+    for (int i = 0; i < devicesAmount; i++) {
+        totalDevWork.push_back(0);
+    }
+
+    for (auto it = tmpTimeOfDeviceWork.begin(); it != tmpTimeOfDeviceWork.end(); ++it) {
+        int index = std::stoi(it->first);
+
+        std::pair<float, float> pairDevWork = it->second;
+
+        if (pairDevWork.second == 0)
+            continue;
+
+        totalDevWork.at(index - 1) += std::max(pairDevWork.first, pairDevWork.second) - std::min(pairDevWork.first, pairDevWork.second);
     }
 
     for (auto it = tmpTimeOfWait.begin(); it != tmpTimeOfWait.end(); ++it) {
@@ -284,6 +312,10 @@ void Morozov::Analytics::commit()
             continue;
 
         totalTOP.at(index - 1) += std::max(pairTOP.first, pairTOP.second) - std::min(pairTOP.first, pairTOP.second);
+    }
+
+    for (int i =0; i < deviceLoad.size(); i++) {
+        deviceLoad.at(i) = (totalDevWork.at(i)/allWorkTime)*100;
     }
 
     for (int i =0; i < time_of_wait.size(); i++) {

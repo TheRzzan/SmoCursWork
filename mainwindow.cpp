@@ -85,12 +85,18 @@ void MainWindow::on_buttonNext_clicked()
         int all = 0;
         for (int i = 0; i < analytics.getReq_proc().size(); i++) {
             resultStr2 += "source" + std::to_string(i) + ": \t" +
-                    std::to_string(analytics.getReq_proc().at(i)) + " " +
-                    std::to_string(analytics.getReq_fail().at(i)) + " " +
-                    std::to_string(analytics.getTime_of_wait().at(i)) + " " +
-                    std::to_string(analytics.getTime_of_process().at(i)) + "\n";
+                           std::to_string(analytics.getReq_proc().at(i)) + " " +
+                           std::to_string(analytics.getReq_fail().at(i)) + " " +
+                           std::to_string(analytics.getTime_of_wait().at(i)) + " " +
+                           std::to_string(analytics.getTime_of_process().at(i)) + "\n";
+
             all += analytics.getReq_proc().at(i);
             all += analytics.getReq_fail().at(i);
+        }
+
+        for (int i = 0; i < analytics.getDeviceLoad().size(); i++) {
+            resultStr2 += "device" + std::to_string(i) + " " +
+                           std::to_string(analytics.getDeviceLoad().at(i)) + "%" + "\n";
         }
 
         resultStr2 += "All: " + std::to_string(all);

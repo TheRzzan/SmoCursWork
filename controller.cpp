@@ -105,7 +105,7 @@ std::list<std::string> Morozov::Controller::modulateWork(Analytics &analytics)
         resultList.push_back(tmpResStr);
     }
 
-    analytics.commit();
+    analytics.commit(currentTime);
     return resultList;
 }
 
