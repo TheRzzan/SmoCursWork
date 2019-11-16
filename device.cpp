@@ -30,7 +30,8 @@ bool Morozov::Device::isFreeDevice()
 
 int Morozov::Device::addNewRequest(float currentTime, Morozov::Request request)
 {
-    float timeToDo = currentTime + (std::log(qrand() + 1) - std::log(RAND_MAX)/(-this->lambda));
+    float timeToDo = currentTime + (std::log(qrand() + 1) - std::log(RAND_MAX)/-this->lambda);
+//    float timeToDo = currentTime + ((std::log(1 - ((float)qrand()/(float)RAND_MAX)))*(-1/this->lambda));
 
     for (int i = 0; i < devices.size(); i++) {
         if (cursor >= devices.size() || cursor < 0) {

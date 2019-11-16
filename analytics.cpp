@@ -338,6 +338,24 @@ void Morozov::Analytics::commit(float allWorkTime)
     for (int i =0; i < time_of_process.size(); i++) {
         time_of_process.at(i) = totalTOP.at(i)/tmpTimeOfProcess.size();
     }
+
+    for (int i = 0; i < time_in_system.size(); i++) {
+        time_in_system.at(i) = time_of_wait.at(i) + time_of_process.at(i);
+    }
+
+    for (int i = 0; i < prob_of_fail.size(); i++) {
+        float a = req_fail.at(i);
+        float b = req_proc.at(i);
+        prob_of_fail.at(i) = (a/(a + b))*100;
+    }
+
+    for (int i = 0; i < disp_top.size(); i++) {
+        disp_top.at(i) = (time_of_process.at(i)/time_in_system.at(i));
+    }
+
+    for (int i = 0; i < disp_tow.size(); i++) {
+        disp_tow.at(i) = (time_of_wait.at(i)/time_in_system.at(i));
+    }
 }
 
 std::vector<Morozov::Analytics::StepModel> Morozov::Analytics::getSteps() const

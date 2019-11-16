@@ -23,6 +23,8 @@ private slots:
 
     void on_buttonNext_clicked();
 
+    void on_buttonBack_clicked();
+
 private:
     Ui::MainWindow *ui;
     Morozov::Controller controller;

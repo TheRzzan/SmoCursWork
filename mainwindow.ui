@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>30</x>
@@ -39,14 +39,14 @@
        <item>
         <widget class="QPushButton" name="buttonBack">
          <property name="text">
-          <string>Back step</string>
+          <string>step mode</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="buttonNext">
          <property name="text">
-          <string>Next step</string>
+          <string>all results</string>
          </property>
         </widget>
        </item>

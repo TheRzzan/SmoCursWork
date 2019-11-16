@@ -37,49 +37,6 @@ void MainWindow::on_buttonNext_clicked()
 //        ui->textBrowser->setText(QString::fromUtf8("Конец"));
 //    }
 
-
-//    std::vector<Morozov::Analytics::StepModel> steps = analytics.getSteps();
-
-//    if (step >= steps.size() || step < 0) {
-//        ui->textBrowser->setText(QString::fromUtf8("Конец"));
-//    } else {
-//        Morozov::Analytics::StepModel stepTmp = steps.at(step);
-//        int i = 0;
-//        std::string resultStr = "";
-//        int max = std::max(std::max(stepTmp.sources.size(), stepTmp.buffers.size()), stepTmp.devices.size());
-
-//        do {
-//            if (i >= stepTmp.sources.size()) {
-//                resultStr += "\t";
-//            } else {
-//                resultStr += "source" + std::to_string(i) + " : " + stepTmp.sources.at(i) + "\t";
-//            }
-
-//            if (i >= stepTmp.buffers.size()) {
-//                resultStr += "\t";
-//            } else {
-//                resultStr += "buffer" + std::to_string(i) + " : " + stepTmp.buffers.at(i) + "\t";
-//            }
-
-//            if (i >= stepTmp.devices.size()) {
-//                resultStr += "\n";
-//            } else {
-//                resultStr += "device" + std::to_string(i) + " : " + stepTmp.devices.at(i) + "\n";
-//            }
-
-//            i++;
-//        } while(i < max);
-
-//        resultStr += "\n\nCanceled: ";
-//        for (int j = 0; j < stepTmp.canceled.size(); j++) {
-//            resultStr += stepTmp.canceled.at(j) + " ";
-//        }
-
-//        ui->textBrowser->setText(QString::fromUtf8(resultStr.c_str()));
-//        step++;
-//    }
-
-
     if (analytics.getReq_proc().size() > 0) {
         std::string resultStr2 = "";
         int all = 0;
@@ -87,8 +44,12 @@ void MainWindow::on_buttonNext_clicked()
             resultStr2 += "source" + std::to_string(i) + ": \t" +
                            std::to_string(analytics.getReq_proc().at(i)) + " " +
                            std::to_string(analytics.getReq_fail().at(i)) + " " +
+                           std::to_string(analytics.getTime_in_system().at(i)) + " " +
                            std::to_string(analytics.getTime_of_wait().at(i)) + " " +
-                           std::to_string(analytics.getTime_of_process().at(i)) + "\n";
+                           std::to_string(analytics.getTime_of_process().at(i)) + " " +
+                           std::to_string(analytics.getDisp_tow().at(i)) + " " +
+                           std::to_string(analytics.getDisp_top().at(i)) + " " +
+                           std::to_string(analytics.getProb_of_fail().at(i)) + "%\n";
 
             all += analytics.getReq_proc().at(i);
             all += analytics.getReq_fail().at(i);
@@ -103,4 +64,48 @@ void MainWindow::on_buttonNext_clicked()
 
         ui->textBrowser->setText(QString::fromUtf8(resultStr2.c_str()));
     }
+}
+
+void MainWindow::on_buttonBack_clicked()
+{
+        std::vector<Morozov::Analytics::StepModel> steps = analytics.getSteps();
+
+        if (step >= steps.size() || step < 0) {
+            ui->textBrowser->setText(QString::fromUtf8("Конец"));
+        } else {
+            Morozov::Analytics::StepModel stepTmp = steps.at(step);
+            int i = 0;
+            std::string resultStr = "";
+            int max = std::max(std::max(stepTmp.sources.size(), stepTmp.buffers.size()), stepTmp.devices.size());
+
+            do {
+                if (i >= stepTmp.sources.size()) {
+                    resultStr += "\t";
+                } else {
+                    resultStr += "source" + std::to_string(i) + " : " + stepTmp.sources.at(i) + "\t";
+                }
+
+                if (i >= stepTmp.buffers.size()) {
+                    resultStr += "\t";
+                } else {
+                    resultStr += "buffer" + std::to_string(i) + " : " + stepTmp.buffers.at(i) + "\t";
+                }
+
+                if (i >= stepTmp.devices.size()) {
+                    resultStr += "\n";
+                } else {
+                    resultStr += "device" + std::to_string(i) + " : " + stepTmp.devices.at(i) + "\n";
+                }
+
+                i++;
+            } while(i < max);
+
+            resultStr += "\n\nCanceled: ";
+            for (int j = 0; j < stepTmp.canceled.size(); j++) {
+                resultStr += stepTmp.canceled.at(j) + " ";
+            }
+
+            ui->textBrowser->setText(QString::fromUtf8(resultStr.c_str()));
+            step++;
+        }
 }
