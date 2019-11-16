@@ -1,4 +1,5 @@
 #include "analytics.h"
+#include <map>
 
 Morozov::Analytics::Analytics()
 {
@@ -83,6 +84,9 @@ bool Morozov::Analytics::config(int sourcesAmount, int buffersAmount, int device
 
 void Morozov::Analytics::commit()
 {
+    std::map<std::string, std::pair<float, float>> tmpTimeOfWait;
+    std::map<std::string, std::pair<float, float>> tmpTimeOfProcess;
+
     std::vector<std::string> sourcesVec;
     std::vector<std::string> buffersVec;
     std::vector<std::string> devicesVec;
@@ -128,6 +132,11 @@ void Morozov::Analytics::commit()
         }break;
         case ADD_TO_BUFF:
         {
+            std::string tmpKey = std::to_string(reqPair.first.getSourceId()) +
+                                 "." +
+                                 std::to_string(reqPair.first.getRequestNumber());
+            tmpTimeOfWait.insert(std::make_pair(tmpKey, std::make_pair(reqPair.first.getTimeOfWait(), 0)));
+
             for (size_t i = 0; i < buffersVec.size(); i ++) {
                 if (i == (reqPair.second)) {
                     buffersVec.at(i) =
@@ -144,6 +153,14 @@ void Morozov::Analytics::commit()
         }break;
         case REMOVE_FROM_BUFF:
         {
+            std::string tmpKey = std::to_string(reqPair.first.getSourceId()) +
+                                 "." +
+                                 std::to_string(reqPair.first.getRequestNumber());
+            auto tmpIt = tmpTimeOfWait.find(tmpKey);
+            if (tmpIt != tmpTimeOfWait.end()) {
+                tmpIt->second.second = reqPair.first.getTimeOfWait();
+            }
+
             *(req_fail.begin() + reqPair.first.getSourceId() - 1) = (*(req_fail.begin() + reqPair.first.getSourceId() - 1)) + 1;
 
             for (size_t i = 0; i < buffersVec.size(); i ++) {
@@ -158,6 +175,14 @@ void Morozov::Analytics::commit()
         }break;
         case GET_FROM_BUFF:
         {
+            std::string tmpKey = std::to_string(reqPair.first.getSourceId()) +
+                                 "." +
+                                 std::to_string(reqPair.first.getRequestNumber());
+            auto tmpIt = tmpTimeOfWait.find(tmpKey);
+            if (tmpIt != tmpTimeOfWait.end()) {
+                tmpIt->second.second = reqPair.first.getTimeOfWait();
+            }
+
             for (size_t i = 0; i < buffersVec.size(); i ++) {
                 if (i == (reqPair.second)) {
                     buffersVec.at(i) = "null";
@@ -166,6 +191,11 @@ void Morozov::Analytics::commit()
         }break;
         case ADD_TO_DEVICE:
         {
+            std::string tmpKey = std::to_string(reqPair.first.getSourceId()) +
+                                 "." +
+                                 std::to_string(reqPair.first.getRequestNumber());
+            tmpTimeOfProcess.insert(std::make_pair(tmpKey, std::make_pair(reqPair.first.getTimeOfWait(), 0)));
+
             *(req_proc.begin() + reqPair.first.getSourceId() - 1) = (*(req_proc.begin() + reqPair.first.getSourceId() - 1)) + 1;
 
             for (size_t i = 0; i < devicesVec.size(); i ++) {
@@ -188,6 +218,14 @@ void Morozov::Analytics::commit()
         }break;
         case REMOVE_FROM_DEVICE:
         {
+            std::string tmpKey = std::to_string(reqPair.first.getSourceId()) +
+                                 "." +
+                                 std::to_string(reqPair.first.getRequestNumber());
+            auto tmpIt = tmpTimeOfProcess.find(tmpKey);
+            if (tmpIt != tmpTimeOfProcess.end()) {
+                tmpIt->second.second = reqPair.first.getTimeOfWait();
+            }
+
             for (size_t i = 0; i < devicesVec.size(); i ++) {
                 if (i == (reqPair.second - 1)) {
                     devicesVec.at(i) = "null";
@@ -199,6 +237,61 @@ void Morozov::Analytics::commit()
                             canceledVec));
         }break;
         }
+    }
+
+    // count times
+    std::vector<float> totalTOW;
+    std::vector<float> totalTOP;
+
+    for (int i = 0; i < sourcesAmount; i++) {
+        totalTOW.push_back(0);
+        totalTOP.push_back(0);
+    }
+
+    for (auto it = tmpTimeOfWait.begin(); it != tmpTimeOfWait.end(); ++it) {
+        std::string indexStr = "";
+        for (char ch : it->first) {
+            if (ch == '.') {
+                break;
+            } else {
+                indexStr.push_back(ch);
+            }
+        }
+        int index = std::stoi(indexStr);
+
+        std::pair<float, float> pairTOW = it->second;
+
+        if (pairTOW.second == 0)
+            continue;
+
+        totalTOW.at(index - 1) += std::max(pairTOW.first, pairTOW.second) - std::min(pairTOW.first, pairTOW.second);
+    }
+
+    for (auto it = tmpTimeOfWait.begin(); it != tmpTimeOfWait.end(); ++it) {
+        std::string indexStr = "";
+        for (char ch : it->first) {
+            if (ch == '.') {
+                break;
+            } else {
+                indexStr.push_back(ch);
+            }
+        }
+        int index = std::stoi(indexStr);
+
+        std::pair<float, float> pairTOP = it->second;
+
+        if (pairTOP.second == 0)
+            continue;
+
+        totalTOP.at(index - 1) += std::max(pairTOP.first, pairTOP.second) - std::min(pairTOP.first, pairTOP.second);
+    }
+
+    for (int i =0; i < time_of_wait.size(); i++) {
+        time_of_wait.at(i) = totalTOW.at(i)/tmpTimeOfWait.size();
+    }
+
+    for (int i =0; i < time_of_process.size(); i++) {
+        time_of_process.at(i) = totalTOW.at(i)/tmpTimeOfProcess.size();
     }
 }
 
