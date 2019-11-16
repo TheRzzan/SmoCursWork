@@ -193,15 +193,19 @@ void Morozov::Analytics::commit(float allWorkTime)
         }break;
         case ADD_TO_DEVICE:
         {
-            tmpTimeOfDeviceWork.insert(std::make_pair(
-                                           std::to_string(reqPair.second),
-                                           std::make_pair(reqPair.first.getTimeOfWait(), 0)
-                                           ));
-
             std::string tmpKey = std::to_string(reqPair.first.getSourceId()) +
                                  "." +
                                  std::to_string(reqPair.first.getRequestNumber());
-            tmpTimeOfProcess.insert(std::make_pair(tmpKey, std::make_pair(reqPair.first.getTimeOfWait(), 0)));
+
+            tmpTimeOfDeviceWork.insert(std::make_pair(
+                                           std::to_string(reqPair.second) + '.' + tmpKey,
+                                           std::make_pair(reqPair.first.getTimeOfWait(), 0)
+                                           ));
+
+            tmpTimeOfProcess.insert(std::make_pair(
+                                        tmpKey,
+                                        std::make_pair(reqPair.first.getTimeOfWait(), 0)
+                                        ));
 
             *(req_proc.begin() + reqPair.first.getSourceId() - 1) = (*(req_proc.begin() + reqPair.first.getSourceId() - 1)) + 1;
 
@@ -225,14 +229,15 @@ void Morozov::Analytics::commit(float allWorkTime)
         }break;
         case REMOVE_FROM_DEVICE:
         {
-            auto tmpIt = tmpTimeOfDeviceWork.find(std::to_string(reqPair.second));
+            std::string tmpKey = std::to_string(reqPair.first.getSourceId()) +
+                                 "." +
+                                 std::to_string(reqPair.first.getRequestNumber());
+
+            auto tmpIt = tmpTimeOfDeviceWork.find(std::to_string(reqPair.second) + '.' + tmpKey);
             if (tmpIt != tmpTimeOfDeviceWork.end()) {
                 tmpIt->second.second = reqPair.first.getTimeOfWait();
             }
 
-            std::string tmpKey = std::to_string(reqPair.first.getSourceId()) +
-                                 "." +
-                                 std::to_string(reqPair.first.getRequestNumber());
             auto tmpIt2 = tmpTimeOfProcess.find(tmpKey);
             if (tmpIt2 != tmpTimeOfProcess.end()) {
                 tmpIt2->second.second = reqPair.first.getTimeOfWait();
@@ -266,7 +271,15 @@ void Morozov::Analytics::commit(float allWorkTime)
     }
 
     for (auto it = tmpTimeOfDeviceWork.begin(); it != tmpTimeOfDeviceWork.end(); ++it) {
-        int index = std::stoi(it->first);
+        std::string indexStr = "";
+        for (char ch : it->first) {
+            if (ch == '.') {
+                break;
+            } else {
+                indexStr.push_back(ch);
+            }
+        }
+        int index = std::stoi(indexStr);
 
         std::pair<float, float> pairDevWork = it->second;
 
@@ -323,7 +336,7 @@ void Morozov::Analytics::commit(float allWorkTime)
     }
 
     for (int i =0; i < time_of_process.size(); i++) {
-        time_of_process.at(i) = totalTOW.at(i)/tmpTimeOfProcess.size();
+        time_of_process.at(i) = totalTOP.at(i)/tmpTimeOfProcess.size();
     }
 }
 
